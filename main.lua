@@ -1,15 +1,19 @@
 require 'Renderer'
 require 'Level'
+require 'InputHandler'
 
 local level
 local renderer
+local input
 
 function love.load()
-	local levelData = require 'assets.maps.level1'
-	level = Level:new(levelData)
-	level:load()
+	local map = 'assets.maps.level1'
+	level = Level:new(map)
+
+	love.window.setFullscreen(true)
 	renderer = Renderer:new(level)
-	love.window.setMode(1600, 800)
+
+	input = InputHandler:new(level)
 end
 
 function love.draw()
@@ -18,4 +22,23 @@ end
 
 function love.update(dt)
 	level:update(dt)
+	renderer:update(dt)
+end
+
+function love.mousepressed(x, y, button)
+	input:mousePressed(x, y, button)
+end
+
+function love.mousereleased(x, y, button)
+	input:mouseReleased(x, y, button)
+end
+
+function love.keypressed(key)
+   input:keypressed(key)
+end
+
+function love.resize(w, h)
+	if renderer ~= nil then
+		renderer:resize(w, h)
+	end
 end
